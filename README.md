@@ -1,4 +1,9 @@
+# TDT4102
+TDT4102 is a C++ course given during the spring sepester at NTNU, Norway. This extension pulls a NTNU managed git server for updates to the templates and handout code for assignments, as well as the code that goes with the textbook Programming Principles and Practice, Strostrup. 
 
+The enxtension is currently only a proof-of-concept in the making.
+
+The original project this extension builds on top of:
 # Project Templates VSCode Extension
 
 [Visual Studio code](https://code.visualstudio.com) extension that allows you to quickly create new projects based on custom templates. 
