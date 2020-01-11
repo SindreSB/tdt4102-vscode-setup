@@ -7,6 +7,7 @@ import rp = require('request-promise-native');
 import fs = require('fs');
 import request = require('request');
 import child_process = require('child_process');
+import sudo = require('sudo-prompt');
 
 import './utilities/fsutils';
 import { getPlatformString } from './utilities/platform';
@@ -225,10 +226,77 @@ export default class Tdt4102Plugin {
         });
     }
 
+    private async macInstallXcode() {
+        return new Promise((resolve, reject) => {
+            const ls = child_process.spawn("xcode-select", ['--install']);
+
+            ls.stdout.on('data', (data: string) => {
+                console.log(`stdout: ${data}`);
+            });
+
+            ls.stderr.on('data', (data: string) => {
+                console.error(`stderr: ${data}`);
+            });
+
+            ls.on('close', (code: string) => {
+                console.log(`child process exited with code ${code}`);
+                // Write to config that this has succeeded once, so we can skip it later
+                this.econtext.globalState.update("BUILD_TOOLS", true);
+                resolve();
+            });
+        });
+    }
+
+    private async macDeleteExistingTdt4102Folder() {
+        return new Promise((resolve, reject) => {
+            const installdir = this.econtext.globalStoragePath + "/install/tdt4102";
+            const destination = '/Library/tdt4102'
+            sudo.exec(
+                `rm -rf ${destination}`,
+            {
+                name: "TDT4102 Tools"
+            }, (error, stdout, stderr) => {
+                console.log(stdout);
+                console.error(stderr);
+                resolve();
+            });
+        });
+    }
+
+    private async macCopyTdt4102FolderToLibrary() {
+        return new Promise((resolve, reject) => {
+            const installdir = this.econtext.globalStoragePath + "/install/tdt4102";
+            const destination = '/Library/tdt4102'
+            sudo.exec(
+                `cp -r ~/tdt4102 /Library/tdt4102`,
+            {
+                name: "TDT4102 Tools"
+            }, (error, stdout, stderr) => {
+                console.log(error);
+                console.log(stdout);
+                console.error(stderr);
+                resolve();
+            });
+        });
+    }
+
+    private async macCopyHandoutCode() {
+        await this.macDeleteExistingTdt4102Folder();
+        await this.macCopyTdt4102FolderToLibrary();
+    }
+
+    private async runInstallMac() {
+        await this.macInstallXcode();
+        await this.macCopyHandoutCode();
+    }
+
     public async runInstallScript() {
         switch (getPlatformString()) {
             case "windows":
                 await this.runInstallWindows();
+                break;
+            case "macos":
+                await this.runInstallMac();
                 break;
             default:
                 console.error("Platform unsupported");
