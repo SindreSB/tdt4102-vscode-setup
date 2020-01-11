@@ -268,7 +268,7 @@ export default class Tdt4102Plugin {
             const installdir = this.econtext.globalStoragePath + "/install/tdt4102";
             const destination = '/Library/tdt4102'
             sudo.exec(
-                `cp -r ~/tdt4102 /Library/tdt4102`,
+                `cp -r "${installdir}" ${destination}`,
             {
                 name: "TDT4102 Tools"
             }, (error, stdout, stderr) => {
