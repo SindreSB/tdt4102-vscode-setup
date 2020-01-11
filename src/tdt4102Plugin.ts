@@ -202,6 +202,29 @@ export default class Tdt4102Plugin {
         });
     }
 
+    private async windowsCopyShortcut(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const globalDir = this.econtext.globalStoragePath;
+            const installScriptLocation = globalDir + "\\install";
+            const installScriptName = "copy_tdt4102.bat";
+            const argumentList = `@("/c","cd","${installScriptLocation}","&&","xcopy","\"TDT 4102 - VS Code.lnk\"","\"%AppData%\\Microsoft\\Windows\\Start Menu\\Programs\"")`;
+            const ls = child_process.spawn("powershell", ["Start-Process", "cmd.exe", "-Verb", "runAs", "-ArgumentList", argumentList, "-Wait"]);
+
+            ls.stdout.on('data', (data: string) => {
+                console.log(`stdout: ${data}`);
+            });
+
+            ls.stderr.on('data', (data: string) => {
+                console.error(`stderr: ${data}`);
+            });
+
+            ls.on('close', (code: string) => {
+                console.log(`child process exited with code ${code}`);
+                resolve();
+            });
+        });
+    }
+
     private async runInstallWindows() {
         // First check build tools -> nope, it will just assert it's there
         // But this takes time, so a quicker check would be nice
@@ -210,15 +233,16 @@ export default class Tdt4102Plugin {
             title: "Installing prerequisites",
             cancellable: false
         }, async (progress, token) => {
-            progress.report({ increment: 0, message: "Copying handout from book" });
-            // Copy files
+            progress.report({ increment: 0, message: "Handout from book" });
             await this.windowsCopyHandoutCode();
-            progress.report({ increment: 50, message: "Installing build tools" });
+
+            progress.report({ increment: 50, message: "Build tools" });
             await this.windowsInstallBuildTools();
 
-            // Copy shortcut
+            progress.report({ increment: 90, message: "Shortcut" });
+            await this.windowsCopyShortcut();
 
-            progress.report({ increment: 100, message: "Installation completed" });
+            progress.report({ increment: 100, message: "Completed" });
             return new Promise((resolve, reject) => {
                 setTimeout(() => resolve(), 2000);
             });
