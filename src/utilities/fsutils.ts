@@ -2,6 +2,7 @@
 
 import fs = require("fs");
 import path = require("path");
+import tar = require('tar-fs');
 
 /**
  * Recursively copy folder from src to dest
@@ -133,4 +134,13 @@ export function mkdirsSync(dest : string, mode : string | number | null | undefi
 	// make current directory
 	fs.mkdirSync(dest, mode);
 	return true;
+}
+
+export async function extractTarArchive(source: string, destFolder: string)
+{
+	return new Promise((resolve, reject) => {
+		fs.createReadStream(source).pipe(tar.extract(destFolder)).on('finish', () => {
+			resolve();
+		});
+	});
 }

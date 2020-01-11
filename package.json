@@ -21,7 +21,8 @@
     "activationEvents": [
         "onCommand:extension.createTdt4102ProjectFromTemplate",
         "onCommand:extension.forceRefreshTdt4102Templates",
-        "onCommand:extension.refreshTdt4102Templates"
+        "onCommand:extension.refreshTdt4102Templates",
+        "onCommand:extension.runInstallScript"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -73,6 +74,11 @@
             {
                 "command": "extension.forceRefreshTdt4102Templates",
                 "title": "Force update of the course template",
+                "category": "TDT4102"
+            },
+            {
+                "command": "extension.runInstallScript",
+                "title": "Run installation script",
                 "category": "TDT4102"
             }
         ],
