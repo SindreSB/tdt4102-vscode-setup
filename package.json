@@ -1,10 +1,10 @@
 {
-    "name": "project-templates",
-    "displayName": "Project Templates",
+    "name": "tdt4102-tools",
+    "displayName": "TDT4102 Tools",
     "description": "Create and apply custom projects templates",
     "version": "1.2.0",
-    "author": "C. Antonio Sánchez",
-    "publisher": "cantonios",
+    "author": "Sindre Brun",
+    "publisher": "sindresb",
     "icon": "icon.png",
     "homepage": "https://github.com/cantonios/vscode-project-templates",
     "repository": {
@@ -19,10 +19,9 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.openTemplatesFolder",
-        "onCommand:extension.saveProjectAsTemplate",
-        "onCommand:extension.deleteTemplate",
-        "onCommand:extension.createProjectFromTemplate"
+        "onCommand:extension.createTdt4102ProjectFromTemplate",
+        "onCommand:extension.forceRefreshTdt4102Templates",
+        "onCommand:extension.refreshTdt4102Templates"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -30,28 +29,28 @@
             "type": "object",
             "title": "VSCode Project Templates Configuration",
             "properties": {
-                "projectTemplates.templatesDirectory": {
+                "tdt4102.templatesDirectory": {
                     "type": [
                         "string",
                         "null"
                     ],
                     "description": "Directory to read/store project template folders"
                 },
-                "projectTemplates.usePlaceholders": {
+                "tdt4102.usePlaceholders": {
                     "type": [
                         "boolean"
                     ],
                     "default": true,
                     "description": "Look for and replace placeholders in template (e.g. #{author})"
                 },
-                "projectTemplates.placeholderRegExp": {
+                "tdt4102.placeholderRegExp": {
                     "type": [
                         "string"
                     ],
                     "default": "#{(\\w+)?}",
                     "description": "Regular expression for detecting placeholders (e.g. \"#{(\\w+?)}\").  The first capture group dictates the placeholder key."
                 },
-                "projectTemplates.placeholders": {
+                "tdt4102.placeholders": {
                     "type": [
                         "object"
                     ],
@@ -62,37 +61,27 @@
         },
         "commands": [
             {
-                "command": "extension.openTemplatesFolder",
-                "title": "Open Templates Folder",
-                "category": "Project"
+                "command": "extension.createTdt4102ProjectFromTemplate",
+                "title": "Create Project from TDT4102 Template",
+                "category": "TDT4102"
             },
             {
-                "command": "extension.saveProjectAsTemplate",
-                "title": "Save Project as Template",
-                "category": "Project"
+                "command": "extension.refreshTdt4102Templates",
+                "title": "Update the course template",
+                "category": "TDT4102"
             },
             {
-                "command": "extension.deleteTemplate",
-                "title": "Delete Existing Template",
-                "category": "Project"
-            },
-            {
-                "command": "extension.createProjectFromTemplate",
-                "title": "Create Project from Template",
-                "category": "Project"
+                "command": "extension.forceRefreshTdt4102Templates",
+                "title": "Force update of the course template",
+                "category": "TDT4102"
             }
         ],
         "menus": {
             "explorer/context": [
                 {
-                    "command": "extension.createProjectFromTemplate",
+                    "command": "extension.createTdt4102ProjectFromTemplate",
                     "when": "explorerResourceIsFolder",
-                    "group": "projectTemplates@1"
-                },
-                {
-                    "command": "extension.saveProjectAsTemplate",
-                    "when": "explorerResourceIsFolder",
-                    "group": "projectTemplates@2"
+                    "group": "tdt4102@1"
                 }
             ]
         }
@@ -108,7 +97,16 @@
         "@types/mocha": "^2.2.42",
         "@types/node": "^8.10.59",
         "tslint": "^5.20.1",
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.36"
+        "typescript": "^2.6.1"
+    },
+    "dependencies": {
+        "@types/request": "^2.48.4",
+        "@types/request-promise-native": "^1.0.17",
+        "@types/tar-fs": "^1.16.2",
+        "@types/vscode": "^1.41.0",
+        "request": "^2.88.0",
+        "request-promise-native": "^1.0.8",
+        "tar-fs": "^2.0.0",
+        "vscode-test": "^1.3.0"
     }
 }
