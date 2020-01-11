@@ -147,6 +147,14 @@ export default class Tdt4102Plugin {
         });
     }
 
+    /************************************************************
+     * 
+     * 
+     * HEALTHCHECK
+     * 
+     * 
+     ***********************************************************/
+
     private async windowsInstallBuildTools(): Promise<void> {
         return new Promise((resolve, reject) => {
             const globalDir = this.econtext.globalStoragePath;
@@ -164,6 +172,8 @@ export default class Tdt4102Plugin {
 
             ls.on('close', (code: string) => {
                 console.log(`child process exited with code ${code}`);
+                // Write to config that this has succeeded once, so we can skip it later
+                this.econtext.globalState.update("BUILD_TOOLS", true);
                 resolve();
             });
         });
@@ -200,15 +210,15 @@ export default class Tdt4102Plugin {
             title: "Installing prerequisites",
             cancellable: false
         }, async (progress, token) => {
-            progress.report({increment: 0, message: "Copying handout from book"});
+            progress.report({ increment: 0, message: "Copying handout from book" });
             // Copy files
             await this.windowsCopyHandoutCode();
-            progress.report({increment: 50, message: "Installing build tools"});
+            progress.report({ increment: 50, message: "Installing build tools" });
             await this.windowsInstallBuildTools();
 
             // Copy shortcut
 
-            progress.report({increment: 100, message: "Installation completed"});
+            progress.report({ increment: 100, message: "Installation completed" });
             return new Promise((resolve, reject) => {
                 setTimeout(() => resolve(), 2000);
             });
@@ -220,9 +230,21 @@ export default class Tdt4102Plugin {
             case "windows":
                 await this.runInstallWindows();
                 break;
-
             default:
+                console.error("Platform unsupported");
                 break;
         }
+    }
+
+    /************************************************************
+     * 
+     * 
+     * HEALTHCHECK
+     * 
+     * 
+     ***********************************************************/
+
+    public async runHealthcheck() {
+
     }
 }
