@@ -206,9 +206,8 @@ export default class Tdt4102Plugin {
         return new Promise((resolve, reject) => {
             const globalDir = this.econtext.globalStoragePath;
             const installScriptLocation = globalDir + "\\install";
-            const installScriptName = "copy_tdt4102.bat";
-            const argumentList = `@("/c","cd","${installScriptLocation}","&&","xcopy","\"TDT 4102 - VS Code.lnk\"","\"%AppData%\\Microsoft\\Windows\\Start Menu\\Programs\"")`;
-            const ls = child_process.spawn("powershell", ["Start-Process", "cmd.exe", "-Verb", "runAs", "-ArgumentList", argumentList, "-Wait"]);
+            const argumentList = `@("/c","cd","${installScriptLocation}","&&","xcopy","TDT 4102 - VS Code.lnk","%AppData%\\Microsoft\\Windows\\Start Menu\\Programs")`;
+            const ls = child_process.spawn("powershell", ["Start-Process", "cmd.exe", "-ArgumentList", argumentList, "-Wait"]);
 
             ls.stdout.on('data', (data: string) => {
                 console.log(`stdout: ${data}`);
